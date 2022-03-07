@@ -1,19 +1,14 @@
 const bcrypt = require('bcrypt')
 const express = require('express')
-const users = express.Router()
+const router = express.Router()
 const User = require('../models/users.js')
 
 
-users.get('/', (req, res) => {
-  res.json('Hello World')
-})
-
-users.post('/createaccount', (req, res) => {
+router.post('/createaccount', (req, res) => {
   req.body.password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10))
   User.create(req.body, (err, createdUser) => {
     if(err){
-      console.log(err);
-      res.json(err.message)
+      res.json('User already exists')
     } else {
       console.log('user is created', createdUser);
       res.json(createdUser)
@@ -21,8 +16,7 @@ users.post('/createaccount', (req, res) => {
   })
 });
 
-
-users.put('/login', (req, res) => {
+router.put('/login', (req, res) => {
   console.log(req.body);
   User.findOne({username: req.body.username}, (err, foundUser) => {
     if(err) {
@@ -40,4 +34,17 @@ users.put('/login', (req, res) => {
 });
 
 
-module.exports = users
+router.get('/', (req,res) => {
+  User.find({}, (err, foundUsers) => {
+    res.json(foundUsers)
+  })
+})
+
+router.get('/findOne/:username', (req,res) => {
+  User.findOne({username:req.params.username}, (err, foundUser) => {
+    res.json(foundUser)
+  })
+  // res.send('okay')
+})
+
+module.exports = router

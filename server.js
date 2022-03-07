@@ -37,14 +37,19 @@ const isAuthenticated = (req, res, next) => {
   }
 }
 
-app.use('/sessions', sessionsController)
+// app.use('/sessions', sessionsController)
 app.use('/users', userController)
 app.use('/groceries', groceryController)
 app.use('/reviews', reviewsController)
 
-app.get('/', (req, res) => {
-  res.json({})
-})
+app.get('/' , (req, res) => {
+  res.send('Hello World!');
+});
+
+app.get('/both', (req,res) =>{
+  res.send('okay it works')
+} )
+
 
 db.on('error', (err) => console.log(err.message + ' is Mongod not running?'));
 db.on('connected', () => console.log('mongo connected: ', MONGODB_URI));
